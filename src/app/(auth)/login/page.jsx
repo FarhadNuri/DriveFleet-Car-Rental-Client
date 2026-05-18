@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
-// import { signIn } from '@/lib/auth-client';
+import { signIn } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 
 export default function Login() {
@@ -13,17 +13,27 @@ export default function Login() {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const loginData = Object.fromEntries(formData.entries());
-        console.log(loginData);
 
-        // const { data, error } = await signIn.email({
-        //     ...loginData,
-        //     callbackURL: "/"
-        // })
-        // if (error) {
-        //     toast.error("Login failed")
-        //     return;
-        // }
-        // router.push("/")
+        const { data, error } = await signIn.email({
+            email: loginData.email,
+            password: loginData.password,
+            callbackURL: "/"
+        })
+
+        if (error) {
+            toast.error(error.message || "Login failed")
+            return;
+        }
+
+        toast.success("Logged in successfully!")
+        router.push("/")
+    }
+
+    const handleGoogleLogin = async () => {
+        await signIn.social({
+            provider: "google",
+            callbackURL: "/"
+        })
     }
 
     return (
@@ -45,6 +55,7 @@ export default function Login() {
                         <div className="space-y-4">
                             <button
                                 type="button"
+                                onClick={handleGoogleLogin}
                                 className="w-full h-12 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-colors flex items-center justify-center gap-3"
                             >
                                 <img width={20} height={20} src="https://www.google.com/favicon.ico" alt="Google" />

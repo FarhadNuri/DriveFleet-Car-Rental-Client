@@ -3,27 +3,33 @@
 import Link from 'next/link';
 import { User, Mail, Lock, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
-// import { signUp } from '@/lib/auth-client';
+import { signUp } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 
 export default function Register() {
     const router = useRouter();
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const registerData = Object.fromEntries(formData.entries());
-        console.log(registerData);
+const handleRegister = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const registerData = Object.fromEntries(formData.entries());
+    console.log(registerData);
 
-        // const { data, error } = await signUp.email({
-        //     ...registerData
-        // })
-        // if (error) {
-        //     toast.error("Registration failed")
-        //     return;
-        // }
-        // router.push("/")
+    const { data, error } = await signUp.email({
+        name: registerData.name,
+        email: registerData.email,
+        password: registerData.password,
+        image: registerData.image || undefined,
+    })
+
+    if (error) {
+        toast.error(error.message || "Registration failed")
+        return;
     }
+
+    toast.success("Account created successfully!")
+    router.push("/")
+}
 
     return (
         <div className="min-h-[80vh] flex flex-col bg-slate-50 py-12">
