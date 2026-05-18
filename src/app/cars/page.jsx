@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 const fetchCars = async () => {
@@ -14,11 +15,14 @@ async function AllCarsPage() {
       <h1>All Cars</h1>
       <ul>
         {cars.map((car) => (
-          <li key={car.carId}>
-            {car.carName} | {car.carType} - ${car.dailyRentPrice}/day
+          <li key={car._id}>
+            {car.carName} | {car.carType} - ${car.dailyRentPrice}/
+            <Link href={`/cars/${car._id}`}>View Car Details</Link>
           </li>
+          
         ))}
       </ul>
+      
     </div>
   )
 }
