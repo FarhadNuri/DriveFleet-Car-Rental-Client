@@ -1,149 +1,204 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Car, Menu, X, User, LogOut, LayoutDashboard, CirclePlus } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { signOut, useSession } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import { Car, Menu, X, User, LogOut, LayoutDashboard, CirclePlus as PlusCircle, BookmarkPlus } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
-export function MainNavbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
+  const dropdownRef = useRef(null);
   const router = useRouter();
-  const { data: session, isPending } = useSession();
-  //console.log("Session in Navbar:", session);
+  const pathname = usePathname();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleLogOut = async () => {
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const handleLogout = async () => {
     await signOut();
-    router.push("/");
+    setDropdownOpen(false);
+    router.push('/');
   };
 
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/explore-cars', label: 'Explore Cars' },
+    { href: '/add-car', label: 'Add Car' },
+    { href: '/my-bookings', label: 'My Bookings' },
+  ];
+
+  const isActive = (href) => pathname === href;
+
   return (
-    <nav className={`sticky top-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/70 backdrop-blur-md shadow-sm py-2" : "bg-slate-50 py-4"}`}>
+    <nav
+      className={`sticky top-0 z-50 w-full transition-all duration-200 border-b border-gray-800 ${
+        scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-sm' : 'bg-[#0a0a0f]'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="p-2 bg-blue-600 rounded-xl group-hover:rotate-12 transition-transform">
-              <Car className="w-6 h-6 text-white" />
-            </div>
-            <span className="font-extrabold text-2xl tracking-tight text-slate-900">RentWheels</span>
+          
+          <Link href="/" className="flex items-center justify-center gap-2">
+            <img src="/logowtext.png" alt="RentWheels" className="pt-2 h-50 object-contain align-middle" style={{ verticalAlign: 'middle' }} />
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex gap-8 items-center">
-            <Link href="/" className="font-medium text-slate-700 hover:text-blue-600 transition-colors">Home</Link>
-            <Link href="/cars" className="font-medium text-slate-700 hover:text-blue-600 transition-colors">Cars</Link>
-            <Link href="/my-bookings" className="font-medium text-slate-700 hover:text-blue-600 transition-colors">My Bookings</Link>
-            <Link href="/add-car" className="font-medium text-slate-700 hover:text-blue-600 transition-colors">Add Car</Link>
-            <Link href="/dashboard" className="font-medium text-slate-700 hover:text-blue-600 transition-colors">Dashboard</Link>
+          
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors ${
+                  isActive(link.href)
+                    ? 'text-[#e63946]'
+                    : 'text-gray-300 hover:text-[#e63946]'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
 
-          {/* Right Side */}
-          <div className="hidden md:flex items-center gap-4">
-            {!isPending && !session ? (
-              <>
-                <Link href="/login" className="font-medium text-slate-700 hover:text-blue-600 transition-colors">
-                  Login
-                </Link>
-                <Link href="/register">
-                  <button className="font-bold rounded-full px-8 py-2 bg-blue-600 text-white shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-colors">
-                    Rent Now
-                  </button>
-                </Link>
-              </>
-            ) : (
-              <div className="relative group">
-                <button className="flex items-center gap-3 p-1 rounded-full hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200">
+          
+          <div className="hidden md:flex items-center gap-3">
+            {user ? (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center gap-2 p-1 rounded-full hover:bg-white/10 transition-colors"
+                >
                   <Image
-                    width={40}
-                    height={40}
-                    src={session?.user?.image || "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?q=80&w=400"}
+                    src={user.image || 'https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=100'}
                     alt="avatar"
-                    className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-600/10"
+                    width={32}
+                    height={32}
+                    className="w-8 h-8 rounded-full object-cover"
                   />
-                  <div className="text-left hidden lg:block">
-                    <p className="text-sm font-bold truncate max-w-25">{session?.user?.name}</p>
-                    <p className="text-[10px] text-slate-500">Customer</p>
-                  </div>
+                  <span className="text-sm font-medium text-gray-300 max-w-24 truncate">
+                    {user.name}
+                  </span>
                 </button>
 
-                {/* Dropdown */}
-                <div className="absolute right-0 top-12 w-56 bg-white border border-slate-200 rounded-2xl shadow-2xl hidden group-hover:flex flex-col py-2 z-50">
-                  <div className="px-4 py-3 border-b border-slate-100">
-                    <p className="font-bold text-sm">Welcome back!</p>
-                    <p className="text-xs truncate text-slate-500">{session?.user?.email}</p>
+                {dropdownOpen && (
+                  <div className="absolute right-0 top-12 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-[#1a1a2e] truncate">{user.name}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    </div>
+                    <Link
+                      href="/add-car"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-[#1a1a2e] hover:bg-gray-50"
+                    >
+                      <PlusCircle className="w-4 h-4" /> Add Car
+                    </Link>
+                    <Link
+                      href="/my-bookings"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-[#1a1a2e] hover:bg-gray-50"
+                    >
+                      <BookmarkPlus className="w-4 h-4" /> My Bookings
+                    </Link>
+                    <Link
+                      href="/my-added-cars"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-[#1a1a2e] hover:bg-gray-50"
+                    >
+                      <Car className="w-4 h-4" /> My Added Cars
+                    </Link>
+
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 w-full px-4 py-2 text-sm text-[#e63946] hover:bg-red-50"
+                    >
+                      <LogOut className="w-4 h-4" /> Log Out
+                    </button>
                   </div>
-                  <Link href="/dashboard" className="px-4 py-2 text-sm hover:bg-slate-100 flex items-center gap-3 transition-colors">
-                    <LayoutDashboard className="w-4 h-4" /> Dashboard
-                  </Link>
-                  <Link href="/my-bookings" className="px-4 py-2 text-sm hover:bg-slate-100 flex items-center gap-3 transition-colors">
-                    <Car className="w-4 h-4" /> My Bookings
-                  </Link>
-                  <Link href="/add-car" className="px-4 py-2 text-sm hover:bg-slate-100 flex items-center gap-3 transition-colors">
-                    <CirclePlus className="w-4 h-4" /> Add Car
-                  </Link>
-                  <Link href="/profile" className="px-4 py-2 text-sm hover:bg-slate-100 flex items-center gap-3 transition-colors">
-                    <User className="w-4 h-4" /> Profile
-                  </Link>
-                  <button onClick={handleLogOut} className="px-4 py-2 text-sm text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors text-left">
-                    <LogOut className="w-4 h-4" /> Log Out
-                  </button>
-                </div>
+                )}
               </div>
+            ) : (
+              <Link
+                href="/login"
+                className="px-4 py-2 bg-[#e63946] text-white text-sm font-medium rounded-lg hover:bg-[#c1121f] transition-colors"
+              >
+                Login
+              </Link>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+          
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden p-2 rounded-lg hover:bg-white/10 text-gray-300"
+          >
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden px-4 pt-2 pb-6 space-y-2 bg-white border-b border-slate-200">
-          <Link href="/" className="block px-4 py-3 text-base font-medium text-slate-900 hover:bg-slate-50 rounded-xl">Home</Link>
-          <Link href="/cars" className="block px-4 py-3 text-base font-medium text-slate-900 hover:bg-slate-50 rounded-xl">Cars</Link>
-          <Link href="/my-bookings" className="block px-4 py-3 text-base font-medium text-slate-900 hover:bg-slate-50 rounded-xl">My Bookings</Link>
-          <Link href="/add-car" className="block px-4 py-3 text-base font-medium text-slate-900 hover:bg-slate-50 rounded-xl">Add Car</Link>
-          <Link href="/dashboard" className="block px-4 py-3 text-base font-medium text-slate-900 hover:bg-slate-50 rounded-xl">Dashboard</Link>
-
-          <div className="pt-4 border-t border-slate-200 mt-4">
-            {!session ? (
-              <div className="grid grid-cols-2 gap-4">
-                <Link href="/login">
-                  <button className="w-full py-2 rounded-xl border border-slate-200 font-medium hover:bg-slate-50 transition-colors">
-                    Login
-                  </button>
-                </Link>
-                <Link href="/register">
-                  <button className="w-full py-2 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors">
-                    Rent Now
-                  </button>
-                </Link>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <p className="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Account</p>
-                <button onClick={handleLogOut} className="block w-full text-left px-4 py-3 text-base font-medium text-red-500 hover:bg-red-50 rounded-xl">
-                  Log Out
-                </button>
-              </div>
-            )}
-          </div>
+      
+      {menuOpen && (
+        <div className="md:hidden border-t border-gray-800 bg-[#0a0a0f] px-4 py-3 space-y-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              className={`block px-3 py-2.5 rounded-lg text-sm font-medium ${
+                isActive(link.href)
+                  ? 'bg-red-900/30 text-[#e63946]'
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+          {user ? (
+            <>
+              <Link
+                href="/my-added-cars"
+                onClick={() => setMenuOpen(false)}
+                className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10"
+              >
+                My Added Cars
+              </Link>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-[#e63946] hover:bg-red-900/30"
+              >
+                Log Out
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setMenuOpen(false)}
+              className="block px-3 py-2.5 rounded-lg text-sm font-medium text-[#e63946] hover:bg-red-900/30"
+            >
+              Login
+            </Link>
+          )}
         </div>
       )}
     </nav>
