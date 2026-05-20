@@ -39,11 +39,50 @@ export default function MyAddedCars() {
   }, [user, token]);
 
   const handleUpdate = async (e) => {
-
+    e.preventDefault();
+    setActionLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/cars/${editCar._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(editCar),
+      });
+      if (res.ok) {
+        setMessage({ type: 'success', text: 'Car updated!' });
+        setEditCar(null);
+        fetchCars();
+      } else {
+        const data = await res.json();
+        setMessage({ type: 'error', text: data.message || 'Update failed.' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Something went wrong.' });
+    }
+    setActionLoading(false);
   };
 
   const handleDelete = async () => {
-
+    setActionLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/cars/${deleteCar._id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        setMessage({ type: 'success', text: 'Car deleted.' });
+        setDeleteCar(null);
+        fetchCars();
+      } else {
+        const data = await res.json();
+        setMessage({ type: 'error', text: data.message || 'Delete failed.' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Something went wrong.' });
+    }
+    setActionLoading(false);
   };
 
   const inputClass =
