@@ -13,6 +13,7 @@ export function MainNavbar() {
 
   const router = useRouter();
   const { data: session, isPending } = useSession();
+  //console.log("Session in Navbar:", session);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
