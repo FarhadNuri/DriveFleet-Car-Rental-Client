@@ -108,6 +108,15 @@ CLIENT_URL=http://localhost:3000
 MONGO_URI=your-mongodb-connection-string
 ```
 
+## Deployment
+
+The API is deployed on Vercel and can be accessed at:
+```
+https://drive-fleet-car-rental-client.vercel.app/ 
+```
+
+
+
 ## Contact
 
 For questions or support, contact: farhadnuri559@gmail.com
