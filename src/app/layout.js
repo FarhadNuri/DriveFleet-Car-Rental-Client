@@ -26,7 +26,28 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <AuthProvider>
-          <Toaster position="top-center" />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 5000,
+              style: {
+                background: '#1a1a2e',
+                color: '#fff',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '14px',
+                fontWeight: 500,
+                padding: '12px 16px',
+                borderRadius: '12px',
+                boxShadow: '0 10px 25px -5px rgba(0,0,0,0.15)',
+              },
+              success: {
+                iconTheme: { primary: '#10b981', secondary: '#fff' },
+              },
+              error: {
+                iconTheme: { primary: '#ef4444', secondary: '#fff' },
+              },
+            }}
+          />
           <div className="min-h-screen flex flex-col bg-[#f8f9fa]">
             <Navbar />
             <main className="flex-1">

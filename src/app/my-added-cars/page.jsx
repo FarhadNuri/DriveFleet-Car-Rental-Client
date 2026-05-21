@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import PrivateRoute from '@/components/PrivateRoute';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -19,7 +20,6 @@ export default function MyAddedCars() {
   const [editCar, setEditCar] = useState(null);
   const [deleteCar, setDeleteCar] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
-  const [message, setMessage] = useState(null);
 
   const fetchCars = () => {
     if (!user?.id || !token) return;
@@ -42,24 +42,25 @@ export default function MyAddedCars() {
     e.preventDefault();
     setActionLoading(true);
     try {
-      const res = await fetch(`${API_URL}/cars/${editCar._id}`, {
+      const { _id, ownerId, ownerEmail, createdAt, bookingCount, ...updateData } = editCar;
+      const res = await fetch(`${API_URL}/cars/${_id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(editCar),
+        body: JSON.stringify(updateData),
       });
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Car updated!' });
+        toast.success('Car updated!');
         setEditCar(null);
         fetchCars();
       } else {
         const data = await res.json();
-        setMessage({ type: 'error', text: data.message || 'Update failed.' });
+        toast.error(data.message || 'Update failed.');
       }
     } catch {
-      setMessage({ type: 'error', text: 'Something went wrong.' });
+      toast.error('Something went wrong.');
     }
     setActionLoading(false);
   };
@@ -72,15 +73,15 @@ export default function MyAddedCars() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Car deleted.' });
+        toast.success('Car deleted.');
         setDeleteCar(null);
         fetchCars();
       } else {
         const data = await res.json();
-        setMessage({ type: 'error', text: data.message || 'Delete failed.' });
+        toast.error(data.message || 'Delete failed.');
       }
     } catch {
-      setMessage({ type: 'error', text: 'Something went wrong.' });
+      toast.error('Something went wrong.');
     }
     setActionLoading(false);
   };
@@ -101,18 +102,6 @@ export default function MyAddedCars() {
           >
             My Added Cars
           </motion.h1>
-
-          {message && (
-            <div
-              className={`mb-4 p-3 rounded-lg text-sm ${
-                message.type === 'success'
-                  ? 'bg-green-50 text-[#10b981]'
-                  : 'bg-red-50 text-[#ef4444]'
-              }`}
-            >
-              {message.text}
-            </div>
-          )}
 
           {loading ? (
             <LoadingSpinner />

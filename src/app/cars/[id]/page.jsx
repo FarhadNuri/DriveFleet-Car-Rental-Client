@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
 import { MapPin, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import BookingModal from '@/components/BookingModal';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -21,7 +22,6 @@ export default function CarDetails() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
-  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     if (!id) return;
@@ -58,16 +58,16 @@ const handleBook = async ({ carId, driverNeeded, specialNote }) => {
     });
     const data = await res.json();
     if (res.ok) {
-      setMessage({ type: 'success', text: 'Booking confirmed!' });
+      toast.success('Booking confirmed!');
       setShowModal(false);
       const carRes = await fetch(`${API_URL}/cars/${id}`);
       const carData = await carRes.json();
       setCar(carData);
     } else {
-      setMessage({ type: 'error', text: data.message || 'Booking failed.' });
+      toast.error(data.message || 'Booking failed.');
     }
   } catch {
-    setMessage({ type: 'error', text: 'Something went wrong.' });
+    toast.error('Something went wrong.');
   }
   setBookingLoading(false);
 };
@@ -138,19 +138,6 @@ const handleBook = async ({ carId, driverNeeded, specialNote }) => {
               <p className="mt-4 text-sm text-gray-500 leading-relaxed">
                 {car.description}
               </p>
-            )}
-
-            
-            {message && (
-              <div
-                className={`mt-4 p-3 rounded-lg text-sm ${
-                  message.type === 'success'
-                    ? 'bg-green-50 text-[#10b981]'
-                    : 'bg-red-50 text-[#ef4444]'
-                }`}
-              >
-                {message.text}
-              </div>
             )}
 
             <motion.button

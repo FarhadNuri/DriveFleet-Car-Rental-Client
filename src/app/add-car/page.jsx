@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import PrivateRoute from '@/components/PrivateRoute';
 
@@ -13,7 +14,6 @@ const AVAILABILITY_OPTIONS = ['Available', 'Not Available'];
 export default function AddCar() {
   const { token } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
 
   const [form, setForm] = useState({
     carName: '',
@@ -33,7 +33,6 @@ export default function AddCar() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
 
     try {
       const res = await fetch(`${API_URL}/cars`, {
@@ -51,7 +50,7 @@ export default function AddCar() {
       });
 
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Car added successfully!' });
+        toast.success('Car added successfully!');
         setForm({
           carName: '',
           dailyRentPrice: '',
@@ -64,10 +63,10 @@ export default function AddCar() {
         });
       } else {
         const data = await res.json();
-        setMessage({ type: 'error', text: data.message || 'Failed to add car.' });
+        toast.error(data.message || 'Failed to add car.');
       }
     } catch {
-      setMessage({ type: 'error', text: 'Something went wrong.' });
+      toast.error('Something went wrong.');
     }
 
     setLoading(false);
@@ -89,18 +88,6 @@ export default function AddCar() {
           >
             Add a New Car
           </motion.h1>
-
-          {message && (
-            <div
-              className={`mb-4 p-3 rounded-lg text-sm ${
-                message.type === 'success'
-                  ? 'bg-green-50 text-[#10b981]'
-                  : 'bg-red-50 text-[#ef4444]'
-              }`}
-            >
-              {message.text}
-            </div>
-          )}
 
           <motion.form
             initial={{ opacity: 0, y: 20 }}

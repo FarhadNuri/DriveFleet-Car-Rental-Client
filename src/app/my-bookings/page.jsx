@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import PrivateRoute from '@/components/PrivateRoute';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -14,7 +15,6 @@ export default function MyBookings() {
   const [loading, setLoading] = useState(true);
   const [cancelId, setCancelId] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
-  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     if (!user?.id || !token) return;
@@ -37,15 +37,15 @@ export default function MyBookings() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Booking cancelled.' });
+        toast.success('Booking cancelled.');
         setBookings(bookings.filter((b) => b._id !== cancelId));
         setCancelId(null);
       } else {
         const data = await res.json();
-        setMessage({ type: 'error', text: data.message || 'Cancel failed.' });
+        toast.error(data.message || 'Cancel failed.');
       }
     } catch {
-      setMessage({ type: 'error', text: 'Something went wrong.' });
+      toast.error('Something went wrong.');
     }
     setActionLoading(false);
   };
@@ -62,18 +62,6 @@ export default function MyBookings() {
           >
             My Bookings
           </motion.h1>
-
-          {message && (
-            <div
-              className={`mb-4 p-3 rounded-lg text-sm ${
-                message.type === 'success'
-                  ? 'bg-green-50 text-[#10b981]'
-                  : 'bg-red-50 text-[#ef4444]'
-              }`}
-            >
-              {message.text}
-            </div>
-          )}
 
           {loading ? (
             <LoadingSpinner />
