@@ -76,7 +76,7 @@ export default function BookingModal({ car, onClose, onBook, loading }) {
               whileHover={{ scale: 1.03 }}
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 border border-[#1a1a2e] text-[#1a1a2e] rounded-lg text-sm font-medium hover:bg-[#1a1a2e] hover:text-white transition-colors"
+              className="cursor-pointer flex-1 py-2.5 border border-[#1a1a2e] text-[#1a1a2e] rounded-lg text-sm font-medium hover:bg-[#1a1a2e] hover:text-white transition-colors"
             >
               Cancel
             </motion.button>
@@ -84,7 +84,7 @@ export default function BookingModal({ car, onClose, onBook, loading }) {
               whileHover={{ scale: 1.03 }}
               type="submit"
               disabled={loading}
-              className="flex-1 py-2.5 bg-[#e63946] text-white rounded-lg text-sm font-medium hover:bg-[#c1121f] transition-colors disabled:opacity-50"
+              className="cursor-pointer flex-1 py-2.5 bg-[#e63946] text-white rounded-lg text-sm font-medium hover:bg-[#c1121f] transition-colors disabled:opacity-50"
             >
               {loading ? 'Booking...' : 'Book Now'}
             </motion.button>
