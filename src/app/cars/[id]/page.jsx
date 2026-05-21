@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import BookingModal from '@/components/BookingModal';
 import LoadingSpinner from '@/components/LoadingSpinner';
-
+import { authClient } from '@/lib/auth-client';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function CarDetails() {
@@ -34,37 +34,43 @@ export default function CarDetails() {
       .catch(() => setLoading(false));
   }, [id]);
 
-  const handleBook = async ({ carId, driverNeeded, specialNote }) => {
-    if (!user) {
-      router.push(`/login?redirect=${encodeURIComponent(`/cars/${id}`)}`);
-      return;
-    }
+const handleBook = async ({ carId, driverNeeded, specialNote }) => {
+  if (!user) {
+    router.push(`/login?redirect=${encodeURIComponent(`/cars/${id}`)}`);
+    return;
+  }
 
-    setBookingLoading(true);
-    try {
-      const res = await fetch(`${API_URL}/bookings`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ carId, driverNeeded, specialNote }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMessage({ type: 'success', text: 'Booking confirmed!' });
-        setShowModal(false);
-        const carRes = await fetch(`${API_URL}/cars/${id}`);
-        const carData = await carRes.json();
-        setCar(carData);
-      } else {
-        setMessage({ type: 'error', text: data.message || 'Booking failed.' });
-      }
-    } catch {
-      setMessage({ type: 'error', text: 'Something went wrong.' });
+  setBookingLoading(true);
+  try {
+    const res = await fetch(`${API_URL}/bookings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ 
+        carId, 
+        driverNeeded, 
+        specialNote,
+        carName: car.carName,
+        dailyRentPrice: car.dailyRentPrice,
+      }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setMessage({ type: 'success', text: 'Booking confirmed!' });
+      setShowModal(false);
+      const carRes = await fetch(`${API_URL}/cars/${id}`);
+      const carData = await carRes.json();
+      setCar(carData);
+    } else {
+      setMessage({ type: 'error', text: data.message || 'Booking failed.' });
     }
-    setBookingLoading(false);
-  };
+  } catch {
+    setMessage({ type: 'error', text: 'Something went wrong.' });
+  }
+  setBookingLoading(false);
+};
 
   if (loading) return <LoadingSpinner />;
   if (!car) return <p className="text-center py-20 text-gray-500">Car not found.</p>;
@@ -82,12 +88,12 @@ export default function CarDetails() {
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="relative w-full h-64 md:h-full min-h-[300px] bg-gray-100">
             <Image
-              src={car.imageUrl || car.image || 'https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=800'}
+              src={car.imageUrl ||  'https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=800'}
               alt={car.carName}
               fill
               className="object-cover"
               unoptimized
-              key={car.imageUrl || car.image}
+              key={car.imageUrl}
             />
           </div>
 

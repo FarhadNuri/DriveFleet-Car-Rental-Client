@@ -14,12 +14,12 @@ export default function CarCard({ car }) {
 
       <div className="relative w-full h-48 bg-gray-100">
         <Image
-          src={car.imageUrl || car.image || 'https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=800'}
+          src={car.imageUrl || 'https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=800'}
           alt={car.carName}
           fill
           className="object-cover"
           unoptimized
-          key={car.imageUrl || car.image}
+          key={car.imageUrl}
         />
 
         <span

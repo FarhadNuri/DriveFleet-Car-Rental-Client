@@ -22,20 +22,20 @@ export default function MyAddedCars() {
   const [message, setMessage] = useState(null);
 
   const fetchCars = () => {
-    if (!user?.id) return;
+    if (!user?.id || !token) return;
     fetch(`${API_URL}/my-cars/${user.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
-        setCars(data || []);
+        setCars(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   };
 
   useEffect(() => {
-    if (user?.id) fetchCars();
+    if (user?.id && token) fetchCars();
   }, [user, token]);
 
   const handleUpdate = async (e) => {
@@ -132,7 +132,7 @@ export default function MyAddedCars() {
                 >
                   <div className="relative w-full h-40 bg-gray-100">
                     <Image
-                      src={car.image || 'https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=800'}
+                      src={car.imageUrl || 'https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=800'}
                       alt={car.carName}
                       fill
                       className="object-cover"
@@ -219,7 +219,7 @@ export default function MyAddedCars() {
                 <label className={labelClass}>Image URL</label>
                 <input
                   type="url"
-                  value={editCar.image || ''}
+                  value={editCar.imageUrl || ''}
                   onChange={(e) =>
                     setEditCar({ ...editCar, image: e.target.value })
                   }

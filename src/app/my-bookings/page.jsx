@@ -17,13 +17,13 @@ export default function MyBookings() {
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id || !token) return;
     fetch(`${API_URL}/bookings/${user.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
-        setBookings(data || []);
+        setBookings(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
