@@ -30,7 +30,24 @@ export default function MyBookings() {
   }, [user, token]);
 
   const handleCancel = async () => {
-    
+    setActionLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/bookings/${cancelId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        setMessage({ type: 'success', text: 'Booking cancelled.' });
+        setBookings(bookings.filter((b) => b._id !== cancelId));
+        setCancelId(null);
+      } else {
+        const data = await res.json();
+        setMessage({ type: 'error', text: data.message || 'Cancel failed.' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Something went wrong.' });
+    }
+    setActionLoading(false);
   };
 
   return (
