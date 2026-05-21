@@ -214,7 +214,7 @@ export default function AddCar() {
               whileHover={{ scale: 1.03 }}
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#e63946] text-white font-medium rounded-lg hover:bg-[#c1121f] transition-colors disabled:opacity-50"
+              className="cursor-pointer w-full py-3 bg-[#e63946] text-white font-medium rounded-lg hover:bg-[#c1121f] transition-colors disabled:opacity-50"
             >
               {loading ? 'Adding...' : 'Add Car'}
             </motion.button>

@@ -38,6 +38,13 @@ export default function Navbar() {
     router.push('/');
   };
 
+  const handleLogoClick = (e) => {
+    if (pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/explore-cars', label: 'Explore Cars' },
@@ -50,14 +57,14 @@ export default function Navbar() {
   return (
     <nav
       className={`sticky top-0 z-50 w-full transition-all duration-200 border-b border-gray-800 ${
-        scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-md shadow-sm' : 'bg-[#0a0a0f]'
+        scrolled ? 'bg-[#0D0D0D]/95 backdrop-blur-md shadow-sm' : 'bg-[#0D0D0D]'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           
-          <Link href="/" className="flex items-center justify-center gap-2">
-            <img src="/logowtext.png" alt="RentWheels" className="pt-2 h-50 object-contain align-middle" style={{ verticalAlign: 'middle' }} />
+          <Link href="/" onClick={handleLogoClick} className="flex items-center justify-center gap-2">
+            <img src="/logowtext.png" alt="DriveFleet" className="pt-2 h-50 object-contain align-middle" style={{ verticalAlign: 'middle' }} />
           </Link>
 
           
@@ -156,7 +163,23 @@ export default function Navbar() {
 
       
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-800 bg-[#0a0a0f] px-4 py-3 space-y-1">
+        <div className="md:hidden border-t border-gray-800 bg-[#0D0D0D] px-4 py-3 space-y-1">
+          {user && (
+            <div className="flex items-center gap-3 px-3 py-3 mb-2 bg-white/5 rounded-lg border border-gray-800">
+              <Image
+                src={user.image || 'https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=100'}
+                alt="avatar"
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white truncate">{user.name}</p>
+                <p className="text-xs text-gray-400 truncate">{user.email}</p>
+              </div>
+            </div>
+          )}
+          
           {navLinks.map((link) => (
             <Link
               key={link.href}

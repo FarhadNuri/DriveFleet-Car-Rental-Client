@@ -150,7 +150,7 @@ const handleBook = async ({ carId, driverNeeded, specialNote }) => {
                 setShowModal(true);
               }}
               disabled={!isAvailable}
-              className="mt-6 w-full py-3 bg-[#e63946] text-white font-medium rounded-lg hover:bg-[#c1121f] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="cursor-pointer mt-6 w-full py-3 bg-[#e63946] text-white font-medium rounded-lg hover:bg-[#c1121f] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               {isAvailable ? 'Book Now' : 'Not Available'}
             </motion.button>

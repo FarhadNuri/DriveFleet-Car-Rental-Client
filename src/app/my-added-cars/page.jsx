@@ -137,14 +137,14 @@ export default function MyAddedCars() {
                       <motion.button
                         whileHover={{ scale: 1.03 }}
                         onClick={() => setEditCar({ ...car })}
-                        className="flex-1 py-2 text-sm font-medium border border-[#1a1a2e] text-[#1a1a2e] rounded-lg hover:bg-[#1a1a2e] hover:text-white transition-colors"
+                        className="cursor-pointer flex-1 py-2 text-sm font-medium border border-[#1a1a2e] text-[#1a1a2e] rounded-lg hover:bg-[#1a1a2e] hover:text-white transition-colors"
                       >
                         Update
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.03 }}
                         onClick={() => setDeleteCar(car)}
-                        className="flex-1 py-2 text-sm font-medium text-[#ef4444] border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                        className="cursor-pointer flex-1 py-2 text-sm font-medium text-[#ef4444] border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
                       >
                         Delete
                       </motion.button>
@@ -245,7 +245,7 @@ export default function MyAddedCars() {
                   whileHover={{ scale: 1.03 }}
                   type="button"
                   onClick={() => setEditCar(null)}
-                  className="flex-1 py-2.5 border border-[#1a1a2e] text-[#1a1a2e] rounded-lg text-sm font-medium hover:bg-[#1a1a2e] hover:text-white transition-colors"
+                  className="cursor-pointer flex-1 py-2.5 border border-[#1a1a2e] text-[#1a1a2e] rounded-lg text-sm font-medium hover:bg-[#1a1a2e] hover:text-white transition-colors"
                 >
                   Cancel
                 </motion.button>
@@ -253,7 +253,7 @@ export default function MyAddedCars() {
                   whileHover={{ scale: 1.03 }}
                   type="submit"
                   disabled={actionLoading}
-                  className="flex-1 py-2.5 bg-[#e63946] text-white rounded-lg text-sm font-medium hover:bg-[#c1121f] disabled:opacity-50 transition-colors"
+                  className="cursor-pointer flex-1 py-2.5 bg-[#e63946] text-white rounded-lg text-sm font-medium hover:bg-[#c1121f] disabled:opacity-50 transition-colors"
                 >
                   {actionLoading ? 'Saving...' : 'Save'}
                 </motion.button>
@@ -280,7 +280,7 @@ export default function MyAddedCars() {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 onClick={() => setDeleteCar(null)}
-                className="flex-1 py-2.5 border border-[#1a1a2e] text-[#1a1a2e] rounded-lg text-sm font-medium hover:bg-[#1a1a2e] hover:text-white transition-colors"
+                className="cursor-pointer flex-1 py-2.5 border border-[#1a1a2e] text-[#1a1a2e] rounded-lg text-sm font-medium hover:bg-[#1a1a2e] hover:text-white transition-colors"
               >
                 Cancel
               </motion.button>
@@ -288,7 +288,7 @@ export default function MyAddedCars() {
                 whileHover={{ scale: 1.03 }}
                 onClick={handleDelete}
                 disabled={actionLoading}
-                className="flex-1 py-2.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 disabled:opacity-50 transition-colors"
+                className="cursor-pointer flex-1 py-2.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 disabled:opacity-50 transition-colors"
               >
                 {actionLoading ? 'Deleting...' : 'Delete'}
               </motion.button>

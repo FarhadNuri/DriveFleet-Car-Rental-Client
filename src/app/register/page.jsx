@@ -88,7 +88,7 @@ export default function Register() {
       >
         <h1 className="text-2xl font-bold text-[#1a1a2e] text-center mb-1 font-[Syne] tracking-tight">Register</h1>
         <p className="text-sm text-gray-500 text-center mb-6">
-          Create your RentWheels account
+          Create your DriveFllet account
         </p>
 
         {error && (
@@ -102,7 +102,7 @@ export default function Register() {
           whileHover={{ scale: 1.03 }}
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full py-2.5 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 mb-4"
+          className="cursor-pointer w-full py-2.5 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 mb-4"
         >
           <img
             src="https://www.google.com/favicon.ico"
@@ -205,7 +205,7 @@ export default function Register() {
             whileHover={{ scale: 1.03 }}
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-[#e63946] text-white font-medium rounded-lg hover:bg-[#c1121f] transition-colors disabled:opacity-50"
+            className="cursor-pointer w-full py-3 bg-[#e63946] text-white font-medium rounded-lg hover:bg-[#c1121f] transition-colors disabled:opacity-50"
           >
             {loading ? 'Creating account...' : 'Register'}
           </motion.button>
