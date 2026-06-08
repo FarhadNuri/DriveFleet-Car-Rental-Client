@@ -6,6 +6,24 @@ A modern car rental web application built with Next.js that allows users to brow
 
 DriveFleet is a full-stack car rental platform where users can explore available cars, make bookings, and list their own vehicles for rent. The application features secure authentication, real-time availability tracking, and a responsive user interface.
 
+## Live Application
+
+> Explore Drive Fleet in action:
+>
+> **🌐 https://drive-fleet-car-rental-client.vercel.app/**
+>
+> Browse cars, add new car, track availablity & booking
+
+## Backend Repo
+
+> Explore Drive Fleet backend:
+>
+> **🌐 https://github.com/FarhadNuri/DriveFleet-Car-Rental-Server**
+>
+>
+
+
+
 ## Features
 
 ### Authentication
